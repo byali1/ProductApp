@@ -1,3 +1,4 @@
+using ProductApp.Application;
 using ProductApp.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,9 +10,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddApplicationServices();
+builder.Services.AddPersistenceServices();
+
+
+
+
+
 var app = builder.Build();
 
-builder.Services.AddPersistenceServices();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

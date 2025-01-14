@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ProductApp.Application.Features.Commands.CreateProduct;
+using ProductApp.Application.Features.Queries.GetAllProducts;
 using ProductApp.Application.Interfaces.Repository;
 
 namespace ProductApp.WebAPI.Controllers
@@ -8,20 +11,27 @@ namespace ProductApp.WebAPI.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly IProductRepository _productRepository;
+        private readonly IMediator _mediator;
 
-        public ProductController(IProductRepository productRepository)
+        public ProductController(IMediator mediator)
         {
-            _productRepository = productRepository;
+            _mediator = mediator;
         }
 
-        [HttpGet]
+        [HttpGet("[action]")]
         public async Task<IActionResult> GetAllProducts()
         {
-            var products = await _productRepository.GetAllAsync();
+            var query = new GetAllProductsQuery();
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
 
 
-            return Ok(products);
+        [HttpPost("[action]")]
+        public async Task<IActionResult> CreateProduct([FromBody] CreateProductCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return Ok(result);
         }
     }
 }
