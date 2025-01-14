@@ -18,7 +18,7 @@ namespace ProductApp.Application.Features.Commands.CreateProduct
 
         public CreateProductCommandHandler(IProductRepository productRepository, IMapper mapper)
         {
-            _productRepository = productRepository;
+            _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
             _mapper = mapper;
         }
 
