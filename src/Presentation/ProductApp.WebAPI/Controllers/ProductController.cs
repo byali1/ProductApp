@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ProductApp.Application.Interfaces.Repository;
 
-namespace ProductApp.WebAPIv2.Controllers
+namespace ProductApp.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
