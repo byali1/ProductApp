@@ -36,5 +36,12 @@ namespace ProductApp.Persistence.Repositories
         {
             return await _dbContext.Set<T>().FindAsync(id);
         }
+
+        public async Task<T> UpdateAsync(T entity)
+        {
+            _dbContext.Entry(entity).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
+            return entity;
+        }
     }
 }

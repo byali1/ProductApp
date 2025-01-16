@@ -28,7 +28,10 @@ namespace ProductApp.Application.Features.Queries.GetProductById
             var product = await _productRepository.GetByIdAsync(request.Id);
 
             var productDto = _mapper.Map<GetProductByIdViewModel>(product);
-            return new ServiceResponse<GetProductByIdViewModel>(productDto);
+            return new ServiceResponse<GetProductByIdViewModel>(productDto)
+            {
+                Message = "Product retrieved successfully"
+            };
         }
     }
 }

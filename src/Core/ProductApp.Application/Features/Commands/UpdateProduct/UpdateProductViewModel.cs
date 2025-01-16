@@ -4,15 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProductApp.Application.Features.Queries.GetProductById
+namespace ProductApp.Application.Features.Commands.UpdateProduct
 {
-    public class GetProductByIdViewModel
+    public class UpdateProductViewModel
     {
-        public Guid Id { get; set; }
         public string Name { get; set; }
         public decimal Value { get; set; }
         public int Quantity { get; set; }
-        public DateTimeOffset CreatedDate { get; set; }
-        public DateTimeOffset UpdatedDate { get; set; }
+        //public DateTimeOffset? UpdatedDate { get; set; }
     }
 }

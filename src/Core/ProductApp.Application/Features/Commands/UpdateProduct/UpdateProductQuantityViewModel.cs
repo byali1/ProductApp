@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProductApp.Application.Wrappers
+namespace ProductApp.Application.Features.Commands.UpdateProduct
 {
-    public class BaseResponse
+    public class UpdateProductQuantityViewModel
     {
         public Guid Id { get; set; }
-        public bool IsSuccess { get; set; } = true;
-        public string Message { get; set; }
+        public int Quantity { get; set; }
     }
 }

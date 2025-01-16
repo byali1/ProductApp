@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using ProductApp.Application.Dto;
+using ProductApp.Application.Features.Queries.GetProductById;
 using ProductApp.Application.Interfaces.Repository;
 using ProductApp.Application.Wrappers;
 
 namespace ProductApp.Application.Features.Queries.GetAllProducts
 {
-    public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, ServiceResponse<List<ProductDto>>>
+    public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, ServiceResponse<List<GetProductByIdViewModel>>>
     {
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
@@ -22,13 +23,13 @@ namespace ProductApp.Application.Features.Queries.GetAllProducts
             _mapper = mapper;
         }
 
-        public async Task<ServiceResponse<List<ProductDto>>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
+        public async Task<ServiceResponse<List<GetProductByIdViewModel>>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
         {
             var products = await _productRepository.GetAllAsync();
 
-            var productsDtos = _mapper.Map<List<ProductDto>>(products);
+            var productsByIdVM= _mapper.Map<List<GetProductByIdViewModel>>(products);
 
-            return new ServiceResponse<List<ProductDto>>(productsDtos);
+            return new ServiceResponse<List<GetProductByIdViewModel>>(productsByIdVM);
 
         }
     }

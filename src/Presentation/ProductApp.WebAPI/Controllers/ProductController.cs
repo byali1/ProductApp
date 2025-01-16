@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProductApp.Application.Features.Commands.CreateProduct;
+using ProductApp.Application.Features.Commands.UpdateProduct;
 using ProductApp.Application.Features.Queries.GetAllProducts;
 using ProductApp.Application.Features.Queries.GetProductById;
 using ProductApp.Application.Interfaces.Repository;
@@ -42,5 +43,36 @@ namespace ProductApp.WebAPI.Controllers
             var result = await _mediator.Send(command);
             return Ok(result);
         }
+
+        [HttpPut("[action]/{id}")]
+        public async Task<IActionResult> UpdateProduct([FromBody] UpdateProductViewModel product, [FromRoute] Guid id)
+        {
+            var command = new UpdateProductCommand { Id = id, UpdateProduct = product };
+
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+
+        [HttpPatch("[action]/{id}")]
+        public async Task<IActionResult> UpdateProductQuantity([FromBody] int quantity, [FromRoute] Guid id)
+        {
+            try
+            {
+                var command = new UpdateProductQuantityCommand { Id = id, Quantity = quantity };
+                var result = await _mediator.Send(command);
+
+                if (!result.IsSuccess)
+                {
+                    return BadRequest(result.Message);
+                }
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"An error occurred: {ex.Message}");
+            }
+        }
+
     }
 }
