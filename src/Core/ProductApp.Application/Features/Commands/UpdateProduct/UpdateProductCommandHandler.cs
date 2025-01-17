@@ -35,7 +35,7 @@ namespace ProductApp.Application.Features.Commands.UpdateProduct
             }
 
             existingProduct.Name = request.UpdateProduct.Name;
-            existingProduct.Value = request.UpdateProduct.Value;
+            existingProduct.Price = request.UpdateProduct.Price;
             existingProduct.Quantity = request.UpdateProduct.Quantity;
             existingProduct.UpdatedDate = DateTimeOffset.UtcNow;
 

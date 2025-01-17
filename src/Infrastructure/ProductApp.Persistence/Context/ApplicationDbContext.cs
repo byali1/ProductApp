@@ -24,7 +24,7 @@ namespace ProductApp.Persistence.Context
                 {
                     Id = Guid.NewGuid(),
                     Name = "Pen",
-                    Value = 10,
+                    Price = 10,
                     Quantity = 100,
                     CreatedDate = DateTime.UtcNow
                 },
@@ -32,7 +32,7 @@ namespace ProductApp.Persistence.Context
                 {
                     Id = Guid.NewGuid(),
                     Name = "Paper A4",
-                    Value = 1,
+                    Price = 1,
                     Quantity = 200,
                     CreatedDate = DateTime.UtcNow
                 },
@@ -40,7 +40,7 @@ namespace ProductApp.Persistence.Context
                 {
                     Id = Guid.NewGuid(),
                     Name = "Book",
-                    Value = 30,
+                    Price = 30,
                     Quantity = 500,
                     CreatedDate = DateTime.UtcNow
                 });

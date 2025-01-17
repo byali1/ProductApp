@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ProductApp.Application.Features.Commands.AddProductRange;
 using ProductApp.Application.Features.Commands.CreateProduct;
 using ProductApp.Application.Features.Commands.UpdateProduct;
 using ProductApp.Application.Features.Queries.GetAllProducts;
@@ -38,10 +39,24 @@ namespace ProductApp.WebAPI.Controllers
 
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> CreateProduct([FromBody] CreateProductCommand command)
+        public async Task<IActionResult> AddProduct([FromBody] CreateProductCommand command)
         {
             var result = await _mediator.Send(command);
             return Ok(result);
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> AddRangeProducts([FromBody] AddProductRangeCommand command)
+        {
+            try
+            {
+                var result = await _mediator.Send(command);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest($"An error occurred: {e.Message}");
+            }
         }
 
         [HttpPut("[action]/{id}")]

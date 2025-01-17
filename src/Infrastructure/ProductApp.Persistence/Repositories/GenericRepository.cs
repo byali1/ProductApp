@@ -26,6 +26,13 @@ namespace ProductApp.Persistence.Repositories
             return entity;
         }
 
+        public async Task<List<T>> AddRangeAsync(List<T> entities)
+        {
+           await _dbContext.Set<T>().AddRangeAsync(entities);
+           await _dbContext.SaveChangesAsync();
+           return entities;
+        }
+
         public async Task<List<T>> GetAllAsync()
         {
             return await _dbContext.Set<T>().ToListAsync();
