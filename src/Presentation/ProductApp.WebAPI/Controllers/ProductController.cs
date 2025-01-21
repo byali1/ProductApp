@@ -41,21 +41,27 @@ namespace ProductApp.WebAPI.Controllers
         public async Task<IActionResult> AddProduct([FromBody] CreateProductCommand command)
         {
             var result = await _mediator.Send(command);
-            return Ok(result);
+
+            if (!result.IsSuccess)  
+            {
+                return BadRequest(result.Message); 
+            }
+
+            return Ok(result);  
         }
+
 
         [HttpPost("[action]")]
         public async Task<IActionResult> AddRangeProducts([FromBody] AddProductRangeCommand command)
         {
-            try
+            var result = await _mediator.Send(command);
+
+            if (!result.IsSuccess)
             {
-                var result = await _mediator.Send(command);
-                return Ok(result);
+                return BadRequest(result.Message);
             }
-            catch (Exception e)
-            {
-                return BadRequest($"An error occurred: {e.Message}");
-            }
+
+            return Ok(result);
         }
 
         [HttpPut("[action]/{id}")]

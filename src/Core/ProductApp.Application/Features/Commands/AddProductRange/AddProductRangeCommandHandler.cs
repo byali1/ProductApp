@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using MediatR;
 using ProductApp.Application.Interfaces.Repository;
 using ProductApp.Application.Wrappers;
@@ -10,35 +11,38 @@ namespace ProductApp.Application.Features.Commands.AddProductRange
     {
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
+        private readonly IValidator<AddProductRangeCommand> _validator;
 
-        public AddProductRangeCommandHandler(IProductRepository productRepository, IMapper mapper)
+        public AddProductRangeCommandHandler(IProductRepository productRepository, IMapper mapper, IValidator<AddProductRangeCommand> validator)
         {
             _productRepository = productRepository;
             _mapper = mapper;
+            _validator = validator;
         }
 
         public async Task<ServiceResponse<List<Guid>>> Handle(AddProductRangeCommand request, CancellationToken cancellationToken)
         {
-            try
+
+            var result = _validator.Validate(request);
+
+            if (!result.IsValid)
             {
-                var products = _mapper.Map<List<Product>>(request.Products);
-                await _productRepository.AddRangeAsync(products);
-
-                var productIds = products.Select(x => x.Id).ToList();
-
-                return new ServiceResponse<List<Guid>>(productIds)
+                return new ServiceResponse<List<Guid>>(Enumerable.Empty<Guid>().ToList())
                 {
-                    Message = "Product list added successfully"
+                    Message = $"{result.Errors.Select(x => x.ErrorMessage)}",
+                    IsSuccess = false
                 };
             }
-            catch (Exception e)
+
+            var products = _mapper.Map<List<Product>>(request.Products);
+            await _productRepository.AddRangeAsync(products);
+
+            var productIds = products.Select(x => x.Id).ToList();
+
+            return new ServiceResponse<List<Guid>>(productIds)
             {
-                return new ServiceResponse<List<Guid>>(default)
-                {
-                    IsSuccess = false,
-                    Message = "Product list could not add"
-                };
-            }
+                Message = "Product list added successfully"
+            };
         }
     }
 }

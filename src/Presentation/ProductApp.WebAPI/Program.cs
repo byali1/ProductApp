@@ -1,4 +1,7 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using ProductApp.Application;
+using ProductApp.Application.Validation.FluentValidation;
 using ProductApp.Persistence;
 using ProductApp.Persistence.Context;
 
@@ -11,6 +14,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+
 
 builder.Services.AddApplicationServices();
 builder.Services.AddPersistenceServices();

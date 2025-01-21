@@ -27,11 +27,10 @@ namespace ProductApp.Persistence.Repositories
 
             int check = product.Quantity + updateProductQuantityVM.Quantity;
 
-            if (check == 0 || check < 0)
+            if (check < 0)
                 product.Quantity = 0;
             else
                 product.Quantity += updateProductQuantityVM.Quantity;
-
 
             product.UpdatedDate = DateTimeOffset.UtcNow;
             _dbContext.Entry(product).State = EntityState.Modified;
