@@ -28,9 +28,9 @@ namespace ProductApp.Persistence.Repositories
 
         public async Task<List<T>> AddRangeAsync(List<T> entities)
         {
-           await _dbContext.Set<T>().AddRangeAsync(entities);
-           await _dbContext.SaveChangesAsync();
-           return entities;
+            await _dbContext.Set<T>().AddRangeAsync(entities);
+            await _dbContext.SaveChangesAsync();
+            return entities;
         }
 
         public async Task<List<T>> GetAllAsync()
@@ -49,6 +49,23 @@ namespace ProductApp.Persistence.Repositories
             _dbContext.Entry(entity).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
             return entity;
+        }
+
+        public async Task<List<T>> UpdateRangeAsync(List<T> entities)
+        {
+            foreach (var entity in entities)
+            {
+                _dbContext.Entry(entity).State = EntityState.Modified;
+            }
+
+            await _dbContext.SaveChangesAsync();
+            return entities;
+        }
+
+        public async Task<List<T>> GetAllByIdsAsync(List<Guid> ids)
+        {
+            return await _dbContext.Set<T>().Where(entity => ids.Contains(entity.Id)).ToListAsync();
+
         }
     }
 }

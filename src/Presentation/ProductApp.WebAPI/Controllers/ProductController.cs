@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProductApp.Application.Features.Commands.AddProductRange;
 using ProductApp.Application.Features.Commands.CreateProduct;
 using ProductApp.Application.Features.Commands.UpdateProduct;
+using ProductApp.Application.Features.Commands.UpdateProductRange;
 using ProductApp.Application.Features.Queries.GetAllProducts;
 using ProductApp.Application.Features.Queries.GetProductById;
 using ProductApp.Application.Interfaces.Repository;
@@ -66,6 +67,37 @@ namespace ProductApp.WebAPI.Controllers
 
             var result = await _mediator.Send(command);
             return Ok(result);
+        }
+
+        [HttpPut("[action]")]
+        public async Task<IActionResult> UpdateRangeProduct([FromBody] List<UpdateProductRequest> products)
+        {
+            try
+            {
+                var command = new UpdateProductRangeCommand
+                {
+                    Products = products.Select(product => new UpdateProductRangeViewModel
+                    {
+                        Id = product.Id,
+                        Name = product.Product.Name,
+                        Price = product.Product.Price,
+                        Quantity = product.Product.Quantity
+                    }).ToList()
+                };
+
+                var result = await _mediator.Send(command);
+
+                if (!result.IsSuccess)
+                {
+                    return BadRequest(result.Message);
+                }
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest($"An error occurred: {e.Message}");
+            }
         }
 
         [HttpPatch("[action]/{id}")]

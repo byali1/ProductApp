@@ -12,6 +12,5 @@ namespace ProductApp.Application.Interfaces.Repository
     {
         //Ek operasyon imzaları
         Task<UpdateProductQuantityViewModel> UpdateProductQuantityAsync(UpdateProductQuantityViewModel updateProductQuantityVM);
-
     }
 }
