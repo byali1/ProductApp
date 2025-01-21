@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProductApp.Application.Features.Commands.AddProductRange;
 using ProductApp.Application.Features.Commands.CreateProduct;
@@ -7,7 +6,6 @@ using ProductApp.Application.Features.Commands.UpdateProduct;
 using ProductApp.Application.Features.Commands.UpdateProductRange;
 using ProductApp.Application.Features.Queries.GetAllProducts;
 using ProductApp.Application.Features.Queries.GetProductById;
-using ProductApp.Application.Interfaces.Repository;
 
 namespace ProductApp.WebAPI.Controllers
 {

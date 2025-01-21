@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ProductApp.Application.Features.Commands.UpdateProduct;
 using ProductApp.Application.Interfaces.Repository;
 using ProductApp.Domain.Entities;
