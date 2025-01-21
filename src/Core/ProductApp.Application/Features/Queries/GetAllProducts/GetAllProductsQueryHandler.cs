@@ -29,7 +29,10 @@ namespace ProductApp.Application.Features.Queries.GetAllProducts
 
             var productsByIdVM= _mapper.Map<List<GetProductByIdViewModel>>(products);
 
-            return new ServiceResponse<List<GetProductByIdViewModel>>(productsByIdVM);
+            return new ServiceResponse<List<GetProductByIdViewModel>>(productsByIdVM)
+            {
+                Message = "Product list returned successfully"
+            };
 
         }
     }

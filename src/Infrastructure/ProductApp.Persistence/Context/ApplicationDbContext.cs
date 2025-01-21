@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ProductApp.Domain.Entities;
 
 namespace ProductApp.Persistence.Context
@@ -14,37 +9,64 @@ namespace ProductApp.Persistence.Context
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-
+            
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        public static async Task InitializeDatabaseAsync(ApplicationDbContext context)
         {
-            modelBuilder.Entity<Product>().HasData(
+            await context.SeedDataAsync();
+        }
+        private async Task SeedDataAsync()
+        {
+            if (Products.Any())
+                return;
+
+            await Products.AddRangeAsync(new List<Product>
+            {
                 new Product
                 {
                     Id = Guid.NewGuid(),
-                    Name = "Pen",
-                    Price = 10,
-                    Quantity = 100,
+                    Name = "Laptop",
+                    Price = 1500.99M,
+                    Quantity = 50,
                     CreatedDate = DateTime.UtcNow
                 },
                 new Product
                 {
                     Id = Guid.NewGuid(),
-                    Name = "Paper A4",
-                    Price = 1,
-                    Quantity = 200,
+                    Name = "Keyboard",
+                    Price = 29.99M,
+                    Quantity = 300,
                     CreatedDate = DateTime.UtcNow
                 },
                 new Product
                 {
                     Id = Guid.NewGuid(),
-                    Name = "Book",
-                    Price = 30,
+                    Name = "Mouse",
+                    Price = 19.99M,
                     Quantity = 500,
                     CreatedDate = DateTime.UtcNow
-                });
-            base.OnModelCreating(modelBuilder);
+                },
+                new Product
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Monitor",
+                    Price = 220.49M,
+                    Quantity = 120,
+                    CreatedDate = DateTime.UtcNow
+                },
+                new Product
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Headset",
+                    Price = 59.99M,
+                    Quantity = 150,
+                    CreatedDate = DateTime.UtcNow
+                }
+            });
+
+            await SaveChangesAsync();
         }
+
     }
 }
