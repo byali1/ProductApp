@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using MediatR;
 using ProductApp.Application.Interfaces.Repository;
 using ProductApp.Application.Wrappers;
@@ -9,33 +10,36 @@ namespace ProductApp.Application.Features.Commands.UpdateProduct
     {
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
+        private readonly IValidator<UpdateProductQuantityCommand> _validator;
 
-        public UpdateProductQuantityHandler(IProductRepository productRepository, IMapper mapper)
+        public UpdateProductQuantityHandler(IProductRepository productRepository, IMapper mapper, IValidator<UpdateProductQuantityCommand> validator)
         {
             _productRepository = productRepository;
             _mapper = mapper;
+            _validator = validator;
         }
 
         public async Task<ServiceResponse<UpdateProductQuantityViewModel>> Handle(UpdateProductQuantityCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var updateProductQuantityVM = _mapper.Map<UpdateProductQuantityViewModel>(request);
-                var result = await _productRepository.UpdateProductQuantityAsync(updateProductQuantityVM);
+            var result = _validator.Validate(request);
 
-                return new ServiceResponse<UpdateProductQuantityViewModel>(result)
-                {
-                    Message = $"Product quantity updated to ({result.Quantity - request.Quantity} --> {result.Quantity}) successfully"
-                };
-            }
-            catch (Exception ex)
+            if (!result.IsValid)
             {
-                return new ServiceResponse<UpdateProductQuantityViewModel>(_mapper.Map<UpdateProductQuantityViewModel>(request))
+                return new ServiceResponse<UpdateProductQuantityViewModel>(default)
                 {
-                    IsSuccess = false,
-                    Message = ex.Message
+                    Message = $"{result.Errors.Select(x => x.ErrorMessage)}",
+                    IsSuccess = false
                 };
             }
+
+            var mappedResponse = _mapper.Map<UpdateProductQuantityViewModel>(request);
+            var updatedResponse = await _productRepository.UpdateProductQuantityAsync(mappedResponse);
+
+            return new ServiceResponse<UpdateProductQuantityViewModel>(updatedResponse)
+            {
+                Message = $"Product quantity updated to ({updatedResponse.Quantity - request.Quantity} --> {updatedResponse.Quantity}) successfully"
+            };
+
         }
     }
 }

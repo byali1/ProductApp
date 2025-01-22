@@ -36,20 +36,18 @@ namespace ProductApp.WebAPI.Controllers
             return Ok(result);
         }
 
-
         [HttpPost("[action]")]
         public async Task<IActionResult> AddProduct([FromBody] CreateProductCommand command)
         {
             var result = await _mediator.Send(command);
 
-            if (!result.IsSuccess)  
+            if (!result.IsSuccess)
             {
-                return BadRequest(result.Message); 
+                return BadRequest(result.Message);
             }
 
-            return Ok(result);  
+            return Ok(result);
         }
-
 
         [HttpPost("[action]")]
         public async Task<IActionResult> AddRangeProducts([FromBody] AddProductRangeCommand command)
@@ -70,6 +68,12 @@ namespace ProductApp.WebAPI.Controllers
             var command = new UpdateProductCommand { Id = id, UpdateProduct = product };
 
             var result = await _mediator.Send(command);
+
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Message);
+            }
+
             return Ok(result);
         }
 
@@ -107,22 +111,16 @@ namespace ProductApp.WebAPI.Controllers
         [HttpPatch("[action]/{id}")]
         public async Task<IActionResult> UpdateProductQuantity([FromBody] int quantity, [FromRoute] Guid id)
         {
-            try
-            {
-                var command = new UpdateProductQuantityCommand { Id = id, Quantity = quantity };
-                var result = await _mediator.Send(command);
+            var command = new UpdateProductQuantityCommand { Id = id, Quantity = quantity };
+            var result = await _mediator.Send(command);
 
-                if (!result.IsSuccess)
-                {
-                    return BadRequest(result.Message);
-                }
-
-                return Ok(result);
-            }
-            catch (Exception ex)
+            if (!result.IsSuccess)
             {
-                return BadRequest($"An error occurred: {ex.Message}");
+                return BadRequest(result.Message);
             }
+
+            return Ok(result);
+
         }
 
     }

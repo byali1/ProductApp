@@ -28,7 +28,7 @@ namespace ProductApp.Application.Features.Commands.CreateProduct
             {
                 return new ServiceResponse<Guid>(Guid.Empty)
                 {
-                    Message = $"{result.Errors.Select(x=> x.ErrorMessage)} 33333333",
+                    Message = $"{result.Errors.Select(x=> x.ErrorMessage)}",
                     IsSuccess = false
                 };
             }
