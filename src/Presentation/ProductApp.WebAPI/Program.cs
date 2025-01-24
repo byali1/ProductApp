@@ -1,3 +1,4 @@
+using AspNetCoreRateLimit;
 using ProductApp.Application;
 using ProductApp.Persistence;
 using ProductApp.Persistence.Context;
@@ -12,7 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddApplicationServices();
+builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddPersistenceServices();
 
 var app = builder.Build();
@@ -30,6 +31,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseIpRateLimiting();
 
 app.UseHttpsRedirection();
 
