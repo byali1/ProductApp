@@ -5,9 +5,6 @@ using ProductApp.Persistence.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-// Add services to the container.
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -25,13 +22,18 @@ using (var scope = app.Services.CreateScope())
     await ApplicationDbContext.InitializeDatabaseAsync(context);
 }
 
-// Configure the HTTP request pipeline.
+#region RateLimit
+var ipPolicyStore = app.Services.GetRequiredService<IIpPolicyStore>();
+ipPolicyStore.SeedAsync();
+#endregion
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 app.UseIpRateLimiting();
+app.UseClientRateLimiting();
 
 app.UseHttpsRedirection();
 

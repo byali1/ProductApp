@@ -1,11 +1,13 @@
-﻿using System.Reflection;
-using AspNetCoreRateLimit;
+﻿using AspNetCoreRateLimit;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using ProductApp.Application.Validation.FluentValidation;
+using System.Reflection;
 
 namespace ProductApp.Application
 {
@@ -14,28 +16,38 @@ namespace ProductApp.Application
         public static void AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
             var assembly = Assembly.GetExecutingAssembly();
-            services.AddAutoMapper(assembly);
-            services.AddMediatR(assembly);
 
-            //Fluent V.
+            #region AutoMapper
+            services.AddAutoMapper(assembly);
+            #endregion
+
+            #region MediatR
+            services.AddMediatR(assembly);
+            #endregion
+
+
+            #region FluentValidation
             services.AddFluentValidationAutoValidation();
             services.AddValidatorsFromAssemblyContaining<IBaseFluentValidation>();
             services.AddFluentValidationClientsideAdapters();
+            #endregion
 
-            //AspNetCore RateLimit
-
+            #region RateLimit
             services.AddOptions();
             services.AddMemoryCache();
+            services.AddInMemoryRateLimiting();
 
             services.Configure<IpRateLimitOptions>(configuration.GetSection("IpRateLimiting"));
             services.Configure<IpRateLimitPolicies>(configuration.GetSection("IpRateLimitPolicies"));
+
+            services.Configure<ClientRateLimitOptions>(configuration.GetSection("ClientRateLimiting"));
+            services.Configure<ClientRateLimitPolicies>(configuration.GetSection("ClientRateLimitPolicies"));
+
             services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
-            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
-
-            services.AddInMemoryRateLimiting();
-
-
-
+            services.AddSingleton<IClientPolicyStore, MemoryCacheClientPolicyStore>();
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            #endregion
         }
     }
 }
