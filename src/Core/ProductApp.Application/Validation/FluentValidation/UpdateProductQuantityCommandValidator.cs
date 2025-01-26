@@ -14,7 +14,7 @@ namespace ProductApp.Application.Validation.FluentValidation
         {
             RuleFor(x => x.Id).NotNull().NotEmpty().WithMessage("Id is required.");
 
-            RuleFor(x => x.Quantity).NotNull().NotEmpty().WithMessage("Quantity is required");
+            //RuleFor(x => x.Quantity).NotNull().NotEmpty().WithMessage("Quantity is required");
         }
     }
 }
