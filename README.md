@@ -1,0 +1,3 @@
+## Libraries Used
+- FluentValidation
+- AspNetCoreRateLimit
