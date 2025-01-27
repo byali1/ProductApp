@@ -33,7 +33,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseIpRateLimiting();
-app.UseClientRateLimiting();
+//app.UseClientRateLimiting();
 
 app.UseHttpsRedirection();
 

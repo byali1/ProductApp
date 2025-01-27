@@ -40,11 +40,13 @@ namespace ProductApp.Application
             services.Configure<IpRateLimitOptions>(configuration.GetSection("IpRateLimiting"));
             services.Configure<IpRateLimitPolicies>(configuration.GetSection("IpRateLimitPolicies"));
 
-            services.Configure<ClientRateLimitOptions>(configuration.GetSection("ClientRateLimiting"));
-            services.Configure<ClientRateLimitPolicies>(configuration.GetSection("ClientRateLimitPolicies"));
+            //services.Configure<ClientRateLimitOptions>(configuration.GetSection("ClientRateLimiting"));
+            //services.Configure<ClientRateLimitPolicies>(configuration.GetSection("ClientRateLimitPolicies"));
 
             services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
-            services.AddSingleton<IClientPolicyStore, MemoryCacheClientPolicyStore>();
+
+            //services.AddSingleton<IClientPolicyStore, MemoryCacheClientPolicyStore>();
+
             services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             #endregion
