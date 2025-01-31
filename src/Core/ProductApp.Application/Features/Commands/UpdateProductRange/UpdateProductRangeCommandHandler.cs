@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using ProductApp.Application.Interfaces.Repository;
 using ProductApp.Application.Wrappers;
 
@@ -8,11 +9,11 @@ namespace ProductApp.Application.Features.Commands.UpdateProductRange
     public class UpdateProductRangeCommandHandler : IRequestHandler<UpdateProductRangeCommand, ServiceResponse<List<Guid>>>
     {
         private readonly IProductRepository _productRepository;
-        private readonly IMapper _mapper;
-        public UpdateProductRangeCommandHandler(IProductRepository productRepository, IMapper mapper)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public UpdateProductRangeCommandHandler(IProductRepository productRepository, IHttpContextAccessor httpContextAccessor)
         {
             _productRepository = productRepository;
-            _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
         }
         public async Task<ServiceResponse<List<Guid>>> Handle(UpdateProductRangeCommand request, CancellationToken cancellationToken)
         {
@@ -25,8 +26,10 @@ namespace ProductApp.Application.Features.Commands.UpdateProductRange
             {
                 return new ServiceResponse<List<Guid>>(default)
                 {
+                    RequestId = _httpContextAccessor.HttpContext.TraceIdentifier,
                     IsSuccess = false,
-                    Message = "No products found to update."
+                    Message = "No products found to update.",
+                    StatusCode = 404
                 };
             }
 
@@ -47,6 +50,7 @@ namespace ProductApp.Application.Features.Commands.UpdateProductRange
 
             return new ServiceResponse<List<Guid>>(productIds)
             {
+                RequestId = _httpContextAccessor.HttpContext.TraceIdentifier,
                 Message = "Product list updated successfully"
             };
         }

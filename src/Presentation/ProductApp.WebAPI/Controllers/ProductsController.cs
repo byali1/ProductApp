@@ -33,7 +33,11 @@ namespace ProductApp.WebAPI.Controllers
         {
             var query = new GetProductByIdQuery { Id = id };
             var result = await _mediator.Send(query);
-            return Ok(result);
+
+            if (result.IsSuccess)
+                return Ok(result);
+
+            return NotFound(result);
         }
 
         [HttpPost("[action]")]
@@ -80,33 +84,29 @@ namespace ProductApp.WebAPI.Controllers
         [HttpPut("[action]")]
         public async Task<IActionResult> UpdateRangeProduct([FromBody] List<UpdateProductRequest> products)
         {
-            try
+            var command = new UpdateProductRangeCommand
             {
-                var command = new UpdateProductRangeCommand
+                Products = products.Select(product => new UpdateProductRangeViewModel
                 {
-                    Products = products.Select(product => new UpdateProductRangeViewModel
-                    {
-                        Id = product.Id,
-                        Name = product.Product.Name,
-                        Price = product.Product.Price,
-                        Quantity = product.Product.Quantity
-                    }).ToList()
-                };
+                    Id = product.Id,
+                    Name = product.Product.Name,
+                    Price = product.Product.Price,
+                    Quantity = product.Product.Quantity
+                }).ToList()
+            };
 
-                var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command);
 
-                if (!result.IsSuccess)
-                {
-                    return BadRequest(result.Message);
-                }
-
-                return Ok(result);
-            }
-            catch (Exception e)
+            if (!result.IsSuccess)
             {
-                return BadRequest($"An error occurred: {e.Message}");
+                return BadRequest(result.Message);
             }
+
+            return Ok(result);
         }
+
+
+
 
         [HttpPatch("[action]/{id}")]
         public async Task<IActionResult> UpdateProductQuantity([FromBody] int quantity, [FromRoute] Guid id)

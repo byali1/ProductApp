@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using ProductApp.Application.Interfaces.Repository;
 using ProductApp.Application.Wrappers;
 using ProductApp.Domain.Entities;
@@ -12,12 +13,14 @@ namespace ProductApp.Application.Features.Commands.AddProductRange
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
         private readonly IValidator<AddProductRangeCommand> _validator;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AddProductRangeCommandHandler(IProductRepository productRepository, IMapper mapper, IValidator<AddProductRangeCommand> validator)
+        public AddProductRangeCommandHandler(IProductRepository productRepository, IMapper mapper, IValidator<AddProductRangeCommand> validator, IHttpContextAccessor httpContextAccessor)
         {
             _productRepository = productRepository;
             _mapper = mapper;
             _validator = validator;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<ServiceResponse<List<Guid>>> Handle(AddProductRangeCommand request, CancellationToken cancellationToken)
@@ -29,8 +32,10 @@ namespace ProductApp.Application.Features.Commands.AddProductRange
             {
                 return new ServiceResponse<List<Guid>>(Enumerable.Empty<Guid>().ToList())
                 {
+                    RequestId = _httpContextAccessor.HttpContext.TraceIdentifier,
                     Message = $"{result.Errors.Select(x => x.ErrorMessage)}",
-                    IsSuccess = false
+                    IsSuccess = false,
+                    StatusCode = 400
                 };
             }
 
@@ -41,6 +46,7 @@ namespace ProductApp.Application.Features.Commands.AddProductRange
 
             return new ServiceResponse<List<Guid>>(productIds)
             {
+                RequestId = _httpContextAccessor.HttpContext.TraceIdentifier,
                 Message = "Product list added successfully"
             };
         }

@@ -1,13 +1,12 @@
-﻿using AspNetCoreRateLimit;
+﻿using System.Reflection;
+using AspNetCoreRateLimit;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using ProductApp.Application.Validation.FluentValidation;
-using System.Reflection;
 
 namespace ProductApp.Application
 {

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using ProductApp.Application.Interfaces.Repository;
 using ProductApp.Application.Wrappers;
 using ProductApp.Domain.Entities;
@@ -12,12 +13,14 @@ namespace ProductApp.Application.Features.Commands.CreateProduct
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
         private readonly IValidator<CreateProductCommand> _createProductCommandValidator;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public CreateProductCommandHandler(IProductRepository productRepository, IMapper mapper, IValidator<CreateProductCommand> createProductCommandValidator)
+        public CreateProductCommandHandler(IProductRepository productRepository, IMapper mapper, IValidator<CreateProductCommand> createProductCommandValidator, IHttpContextAccessor httpContextAccessor)
         {
-            _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
+            _productRepository = productRepository;
             _mapper = mapper;
             _createProductCommandValidator = createProductCommandValidator;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<ServiceResponse<Guid>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
@@ -28,8 +31,10 @@ namespace ProductApp.Application.Features.Commands.CreateProduct
             {
                 return new ServiceResponse<Guid>(Guid.Empty)
                 {
+                    RequestId = _httpContextAccessor.HttpContext.TraceIdentifier,
                     Message = $"{result.Errors.Select(x=> x.ErrorMessage)}",
-                    IsSuccess = false
+                    IsSuccess = false,
+                    StatusCode = 400
                 };
             }
 
@@ -37,6 +42,7 @@ namespace ProductApp.Application.Features.Commands.CreateProduct
             await _productRepository.AddAsync(product);
             return new ServiceResponse<Guid>(product.Id)
             {
+                RequestId = _httpContextAccessor.HttpContext.TraceIdentifier,
                 Message = "Product created successfully"
             };
         }
