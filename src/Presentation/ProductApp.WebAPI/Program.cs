@@ -4,6 +4,7 @@ using ProductApp.Infrastructure;
 using ProductApp.Infrastructure.Middlewares;
 using ProductApp.Persistence;
 using ProductApp.Persistence.Context;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddPersistenceServices();
 builder.Services.AddInfrastructureServices();
+builder.Host.UseSerilog();
 
 var app = builder.Build();
 
@@ -29,7 +31,7 @@ using (var scope = app.Services.CreateScope())
 
 #region RateLimit
 var ipPolicyStore = app.Services.GetRequiredService<IIpPolicyStore>();
-ipPolicyStore.SeedAsync();
+await ipPolicyStore.SeedAsync();
 #endregion
 
 if (app.Environment.IsDevelopment())
@@ -39,6 +41,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseIpRateLimiting();
 app.UseMiddleware<RequestLoggingMiddleware>();
+app.UseSerilogRequestLogging();
 
 //app.UseClientRateLimiting();
 
