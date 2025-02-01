@@ -14,10 +14,12 @@ namespace ProductApp.WebAPI.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly ILogger<ProductsController> _logger;
 
-        public ProductsController(IMediator mediator)
+        public ProductsController(IMediator mediator, ILogger<ProductsController> logger)
         {
             _mediator = mediator;
+            _logger = logger;
         }
 
         [HttpGet("[action]")]
@@ -25,7 +27,11 @@ namespace ProductApp.WebAPI.Controllers
         {
             var query = new GetAllProductsQuery();
             var result = await _mediator.Send(query);
+
+            _logger.LogInformation($"GetAllProducts() is called. Request Id:{result.RequestId}");
+
             return Ok(result);
+
         }
 
         [HttpGet("[action]/{id}")]
@@ -34,9 +40,12 @@ namespace ProductApp.WebAPI.Controllers
             var query = new GetProductByIdQuery { Id = id };
             var result = await _mediator.Send(query);
 
+            _logger.LogInformation($"GetProductById() is called. Request Id:{result.RequestId}");
+
             if (result.IsSuccess)
                 return Ok(result);
 
+            _logger.LogInformation($"GetProductById() is called BUT, NOT FOUND DATA! Request Id:{result.RequestId}");
             return NotFound(result);
         }
 
